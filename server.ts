@@ -80,6 +80,7 @@ for await (const req of server) {
       if (verifyAuthorization(participant, req)) {
         if (controller.get(participant)) {
           controller.delete(participant);
+          deleteAuthorization(participant);
           await respond(200);
         } else {
           await respond(404);
@@ -99,6 +100,16 @@ for await (const req of server) {
 //   postParticipant: () => {},
 //   deleteParticipant: () => {},
 // };
+
+function deleteAuthorization(participant: string) {
+  const keyFilePath = path.join("keys", participant);
+  try {
+    Deno.removeSync(keyFilePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function verifyAuthorization(participant: string, req: ServerRequest): boolean {
   const keyFilePath = path.join("keys", participant);
