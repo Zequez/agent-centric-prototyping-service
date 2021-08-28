@@ -1,0 +1,9 @@
+allow:
+  - net
+  - read
+  - write
+importmap: "importmap.json"
+scripts:
+  start:
+    cmd: "deno run ./server.ts"
+    desc: "Start the prototyping server"

@@ -1,0 +1,31 @@
+seedsAccountName: zequezzeuqez
+name: Ezequiel Schwartzman
+contactName: ""
+isOrganization: false
+description: ""
+url: "https://zequez.space"
+acceptsDonations: true
+
+# Contact channels
+discord: "Zequez#6608"
+email: "zequez@gmail.com"
+phone: "+5492235235568"
+telegram: "@Zequez"
+whatsapp: "+5492235235568"
+instagram: "@zequez.space"
+preferredContact: [ Telegram ]
+
+# Images URLs
+paymentQr: "https://gateway.pinata.cloud/ipfs/QmREAxgB717LJP7kDuLWMQ2t8Rdy4ARdSJVuU5f6x5YZRG"
+logo: "https://zequez.space/static/71328c87c8e990b9df27a0bb17a93efc/048da/profile.webp"
+
+# Location
+languages:
+  - en
+  - es
+country: Argentina
+region: Costa atlántica
+city: Mar del Plata
+
+# Listing
+offerings: []
