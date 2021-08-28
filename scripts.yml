@@ -2,8 +2,12 @@ allow:
   - net
   - read
   - write
+unstable: true
 importmap: "importmap.json"
 scripts:
   start:
     cmd: "deno run ./server.ts"
     desc: "Start the prototyping server"
+  test:
+    cmd: "deno test"
+    desc: "Run and watch all tests"

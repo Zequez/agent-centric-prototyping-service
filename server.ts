@@ -1,5 +1,8 @@
 import { serve, ServerRequest } from "deno/http/mod.ts";
+import * as path from "deno/path/mod.ts";
 import { readAll } from "deno/io/mod.ts";
+import { existsSync } from "deno/fs/mod.ts";
+import { createHash } from "deno/hash/mod.ts";
 import favicon from "./favicon.ts";
 import Controller from "./controller.ts";
 
@@ -11,6 +14,7 @@ const statusMessages: Record<number, string> = {
   200: "Success",
   404: "Not found",
   400: "Invalid request",
+  401: "Unauthorized",
 };
 
 const respondWith =
@@ -34,9 +38,11 @@ for await (const req of server) {
     if (req.url === "/favicon.ico") {
       await req.respond(favicon);
     } else if (req.url === "/") {
+      // GET PARTICIPANTS
       const participants = Object.fromEntries(controller.all());
       await respond(200, participants);
     } else {
+      // GET PARTICIPANT
       const participant = req.url.slice(1);
       const data = controller.get(participant);
       if (data) {
@@ -47,34 +53,84 @@ for await (const req of server) {
     }
   }
 
+  // SET participant
   if (req.method === "POST") {
     const participant = extractParticipant(req);
     if (participant) {
-      const data = await extractBodyData(req);
-      if (data) {
-        controller.set(participant, data);
-        await respond(200, data);
+      if (verifyAuthorization(participant, req)) {
+        const data = await extractBodyData(req);
+        if (data) {
+          controller.set(participant, data);
+          await respond(200, data);
+        } else {
+          await respond(400);
+        }
       } else {
-        await respond(400);
+        await respond(401);
       }
     } else {
       await respond(400);
     }
   }
 
+  // DELETE participant
   if (req.method === "DELETE") {
     const participant = extractParticipant(req);
     if (participant) {
-      if (controller.get(participant)) {
-        controller.delete(participant);
-        await respond(200);
+      if (verifyAuthorization(participant, req)) {
+        if (controller.get(participant)) {
+          controller.delete(participant);
+          await respond(200);
+        } else {
+          await respond(404);
+        }
       } else {
-        await respond(404);
+        await respond(401);
       }
     } else {
       await respond(400);
     }
   }
+}
+
+// const routes = {
+//   getParticipants: () => {},
+//   getParticipant: () => {},
+//   postParticipant: () => {},
+//   deleteParticipant: () => {},
+// };
+
+function verifyAuthorization(participant: string, req: ServerRequest): boolean {
+  const keyFilePath = path.join("keys", participant);
+  const isSecuredByKey = existsSync(keyFilePath);
+  const authorizationHash = extractHashedAuthorization(req);
+
+  if (isSecuredByKey) {
+    const storedHash = Deno.readTextFileSync(keyFilePath);
+    if (authorizationHash) {
+      return storedHash === authorizationHash;
+    } else {
+      return false;
+    }
+  } else if (authorizationHash) {
+    Deno.writeTextFileSync(keyFilePath, authorizationHash);
+  }
+
+  return true;
+}
+
+function extractHashedAuthorization(req: ServerRequest): string | null {
+  const auth = req.headers.get("Authorization");
+  if (auth) {
+    const m = auth.match("Basic (.*)");
+    if (m) {
+      const hash = createHash("sha3-512");
+      hash.update(atob(m[1]));
+      return hash.toString();
+    }
+  }
+
+  return null;
 }
 
 function extractParticipant(req: ServerRequest): string | null {
