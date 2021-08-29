@@ -4,23 +4,54 @@ import React, { useEffect, useState } from "https://esm.sh/react@17";
 const App = () => {
   const [participants, setParticipants] = useState<Record<string, unknown>>({});
   const [participant, setParticipant] = useState<string | null>(null);
+  const [editorText, setEditorText] = useState<string>("");
+  const [passphrases, setPassphrases] = useState<Record<string, string>>({});
   useEffect(() => {
     (async () => {
       const response = await fetch("/participants");
       const data = await response.json();
       console.log(data);
       setParticipants(data);
-      const participantsNames = Object.keys(data);
-      if (participantsNames[0]) {
-        setParticipant(participantsNames[0]);
+      const name = Object.keys(data)[0];
+      if (name) {
+        setParticipant(name);
+        setEditorText(JSON.stringify(data[name], null, 2));
       }
     })();
   }, []);
 
   console.log("Rendering");
 
-  const participantData =
-    participants && participant && participants[participant];
+  const clickParticipant = (name: string) => {
+    setParticipant(name);
+    setEditorText(JSON.stringify(participants[name], null, 2));
+  };
+
+  const changePassphrase = (name: string, passphrase: string) => {
+    setPassphrases({ ...passphrases, [name]: passphrase });
+  };
+
+  const submit = () => {
+    if (participant) {
+      const auth = passphrases[participant];
+
+      fetch(`/participants/${participant}`, {
+        method: "POST",
+        headers: auth
+          ? {
+              "Content-Type": "application/json",
+              Authorization: `Basic ${btoa(auth)}`,
+            }
+          : { "Content-Type": "application/json" },
+        body: editorText,
+      });
+    }
+  };
+
+  console.log(participant && passphrases[participant]);
+
+  // const participantData =
+  //   participants && participant && participants[participant];
 
   return (
     <div className="min-h-screen bg-green-500 px-2 pb-2 flex flex-col">
@@ -60,13 +91,13 @@ const App = () => {
               <ParticipantSelector
                 name={name}
                 active={name === participant}
-                onClick={() => setParticipant(name)}
+                onClick={() => clickParticipant(name)}
               />
             ))}
           </div>
         </div>
         <div className="flex-grow flex flex-col">
-          <code
+          <textarea
             className={`
             flex-grow
             bg-gray-200
@@ -74,10 +105,12 @@ const App = () => {
             rounded-tr-lg rounded-bl-lg
             p-2
             whitespace-pre
+            font-mono
+            focus:outline-none focus:ring-1 focus:ring-green-400
           `}
-          >
-            {participantData ? JSON.stringify(participantData, null, 2) : null}
-          </code>
+            value={editorText}
+            onChange={(ev) => setEditorText(ev.target.value)}
+          ></textarea>
           <div className="flex py-4 items-center">
             <input
               type="text"
@@ -91,6 +124,12 @@ const App = () => {
                 border border-gray-200
                 focus:outline-none focus:ring-3 focus:ring-green-400
               `}
+              value={participant ? passphrases[participant] || "" : ""}
+              onChange={
+                participant
+                  ? (ev) => changePassphrase(participant, ev.target.value)
+                  : () => {}
+              }
               placeholder="Passphrase"
             />
             <button
@@ -105,6 +144,7 @@ const App = () => {
                 text-white
                 focus:outline-none focus:ring-3 focus:ring-green-400
               `}
+              onClick={() => submit()}
             >
               Save
             </button>
