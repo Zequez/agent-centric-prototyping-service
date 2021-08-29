@@ -11,6 +11,8 @@ export function generateStyles(html: string) {
     .map((i) => i.result)
     .join(" ");
 
+  console.log(htmlClasses);
+
   // Generate preflight based on the html we input
   const preflightSheet = processor.preflight(html);
 

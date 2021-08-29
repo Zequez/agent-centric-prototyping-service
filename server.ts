@@ -33,7 +33,7 @@ const routes = [
   match("GET", "/styles.css", () =>
     respond(
       200,
-      generateStyles(staticFile("index.html")),
+      generateStyles(staticFile("index.html") + staticFile("app.tsx")),
       new Headers({ "content-type": "text/css" })
     )
   ),
