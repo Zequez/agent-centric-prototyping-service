@@ -9,30 +9,32 @@ Secure Scuttlebutt or whatever ends up being the most convenient.
 - Be online and accessible from any website
 - ✔ Optional authentication with a passphrase
 - ✔ Store agents data
-- ✔ Serve agents data
+- ✔ Serve all agents data
+- Serve agents data based on query
 - Validate data storage according to agreements
 - Store blobs on IPFS and serve them
 - Enforce limit on agent records size
+- Playground panel to explore the all the service functionalities
 
 ## Usage
 
 Public URL: https://agent-centric-prototyping-service.zequez.space
 
 
-### GET /
+### GET /participants
 
 Returns the whole dataset as JSON
 
-### GET /:agentName
+### GET /participants/:agentName
 
 Returns whole agent data as JSON
 
-### POST /:agentName
+### POST /participants/:agentName
 
 Saves whole agent data from JSON-encoded body.
 Can be used Authorization
 
-### DELETE /:agentName
+### DELETE /participants/:agentName
 
 Deletes agent
 Can be used with Authorization
