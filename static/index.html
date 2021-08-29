@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="stylesheet" href="/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Centric Prototyping Service</title>
+  </head>
+  <body class="text-gray-900">
+    <div class="min-h-screen bg-green-500 px-2 pb-2 flex flex-col">
+      <header class="text-white text-3xl px-4 py-8 font-light">
+        Agent Centric Prototyping Service
+      </header>
+      <div class="rounded-lg w-full flex-grow bg-gray-100 shadow-lg flex">
+        <div class="m-4 w-60 flex flex-col">
+          <div class="p-4 text-2xl">Participants</div>
+          <div>
+            <input
+              type="text"
+              class="
+                mb-4
+                rounded-lg
+                px-2
+                py-2
+                h-10
+                w-full
+                border border-gray-200
+                focus:outline-none focus:ring-3 focus:ring-green-400
+              "
+              placeholder="Search"
+            />
+          </div>
+          <div
+            class="
+              bg-gray-200
+              shadow-inner
+              rounded-lg
+              py-2
+              text-gray-700 text-lg
+              flex-grow
+            "
+          >
+            <div class="pl-4 bg-green-500 text-white">zequez</div>
+            <div class="pl-4">potato</div>
+            <div class="pl-4">banana</div>
+            <div class="pl-4">mike</div>
+            <div class="pl-4">brunella</div>
+          </div>
+        </div>
+        <div class="flex-grow flex flex-col">
+          <!-- prettier-ignore -->
+          <code
+            class="
+              flex-grow
+              bg-gray-200
+              shadow-inner
+              rounded-tr-lg rounded-bl-lg
+              p-2
+              whitespace-pre
+            "
+          >
+  seedsAccountName: zequezzeuqez
+  name: Ezequiel Schwartzman
+  contactName: ""
+  isOrganization: false
+  description: ""
+  url: "https://zequez.space"
+  acceptsDonations: true
+
+  # Contact channels
+  discord: "Zequez#6608"
+  email: "zequez@gmail.com"
+  phone: "+5492235235568"
+  telegram: "@Zequez"
+  whatsapp: "+5492235235568"
+  instagram: "@zequez.space"
+  preferredContact: [ Telegram ]
+
+  # Images URLs
+  paymentQr: "https://gateway.pinata.cloud/ipfs/QmREAxgB717LJP7kDuLWMQ2t8Rdy4ARdSJVuU5f6x5YZRG"
+  logo: "https://zequez.space/static/71328c87c8e990b9df27a0bb17a93efc/048da/profile.webp"
+
+  # Location
+  languages:
+    - en
+    - es
+  country: Argentina
+  region: Costa atlántica
+  city: Mar del Plata
+
+  # Listing
+  offerings: []
+        </code>
+          <div class="flex py-4 items-center">
+            <input
+              type="text"
+              class="
+                flex-grow
+                rounded-lg
+                px-2
+                py-2
+                h-10
+                w-full
+                border border-gray-200
+                focus:outline-none focus:ring-3 focus:ring-green-400
+              "
+              placeholder="Passphrase"
+            />
+            <button
+              class="
+                rounded-lg
+                bg-green-500
+                py-2
+                px-4
+                mx-4
+                uppercase
+                font-bold
+                text-white
+                focus:outline-none focus:ring-3 focus:ring-green-400
+              "
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="app"></div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

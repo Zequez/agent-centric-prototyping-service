@@ -1,4 +1,4 @@
-import { ServerRequest, Response } from "deno/http/mod.ts";
+import { ServerRequest, Response } from "std/http/mod.ts";
 
 const statusMessages: Record<number, string> = {
   200: "Success",

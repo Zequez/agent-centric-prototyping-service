@@ -1,5 +1,5 @@
-import { ServerRequest } from "deno/http/mod.ts";
-import { readAll } from "deno/io/mod.ts";
+import { ServerRequest } from "std/http/mod.ts";
+import { readAll } from "std/io/mod.ts";
 const textDecoder = new TextDecoder();
 
 export default async function bodyDecoder(

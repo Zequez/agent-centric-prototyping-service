@@ -1,4 +1,4 @@
-import { serve, Response } from "deno/http/mod.ts";
+import { serve, Response } from "std/http/mod.ts";
 
 import Controller from "./lib/controller.ts";
 import {
@@ -8,15 +8,41 @@ import {
 } from "./lib/authorization.ts";
 import bodyDecoder from "./lib/bodyDecoder.ts";
 import { respond, match } from "./lib/routing.ts";
+import { generateStyles } from "./lib/generateStyles.ts";
+import runDevServer from "./devServer.ts";
 
+runDevServer();
 const server = serve({ port: 8888 });
 const controller = new Controller("./participants/");
-const favicon = Deno.readTextFileSync("./favicon.svg");
+// TODO: On dev mode reload, on prod keep on memory
+const staticFile = (file: string) => Deno.readTextFileSync(`./static/${file}`);
+const favicon = staticFile("favicon.svg");
 
 const participantRegex = /^\/participants\/([a-z0-9-]+)$/;
 const routes = [
   match("GET", "/favicon.ico", () =>
     respond(200, favicon, new Headers({ "content-type": "image/svg+xml" }))
+  ),
+  match("GET", "/", () =>
+    respond(
+      200,
+      staticFile("index.html"),
+      new Headers({ "content-type": "text/html" })
+    )
+  ),
+  match("GET", "/styles.css", () =>
+    respond(
+      200,
+      generateStyles(staticFile("index.html")),
+      new Headers({ "content-type": "text/css" })
+    )
+  ),
+  match("GET", "/main.js", () =>
+    respond(
+      200,
+      staticFile("main.ts"),
+      new Headers({ "content-type": "text/javascript" })
+    )
   ),
   match("GET", "/participants", () =>
     respond(200, Object.fromEntries(controller.all()))

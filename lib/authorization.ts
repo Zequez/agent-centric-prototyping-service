@@ -1,7 +1,7 @@
-import { ServerRequest } from "deno/http/mod.ts";
-import * as path from "deno/path/mod.ts";
-import { existsSync } from "deno/fs/mod.ts";
-import { createHash } from "deno/hash/mod.ts";
+import { ServerRequest } from "std/http/mod.ts";
+import * as path from "std/path/mod.ts";
+import { existsSync } from "std/fs/mod.ts";
+import { createHash } from "std/hash/mod.ts";
 
 const KEYS_PATH = "keys";
 

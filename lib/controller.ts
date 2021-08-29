@@ -1,5 +1,5 @@
-import * as path from "deno/path/mod.ts";
-import { parse, stringify } from "deno/encoding/yaml.ts";
+import * as path from "std/path/mod.ts";
+import { parse, stringify } from "std/encoding/yaml.ts";
 
 export type Participant = Record<string, unknown>;
 
