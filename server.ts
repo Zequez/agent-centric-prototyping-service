@@ -37,13 +37,19 @@ const routes = [
       new Headers({ "content-type": "text/css" })
     )
   ),
-  match("GET", "/main.js", () =>
-    respond(
+  match("GET", "/main.js", async () => {
+    const { files } = await Deno.emit("./static/main.tsx", {
+      check: false,
+      bundle: "module",
+    });
+    console.log(files);
+    const key = Object.keys(files).find((k) => k.endsWith("bundle.js")) || "";
+    return respond(
       200,
-      staticFile("main.ts"),
+      files[key] as string,
       new Headers({ "content-type": "text/javascript" })
-    )
-  ),
+    );
+  }),
   match("GET", "/participants", () =>
     respond(200, Object.fromEntries(controller.all()))
   ),

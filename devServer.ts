@@ -15,10 +15,6 @@ export default async () => {
 
   wss.on("connection", function (ws: WebSocketClient) {
     console.log("[Web socket] Client connected");
-    // ws.on("message", function (message: string) {
-    //   console.log(message);
-    //   ws.send(message);
-    // });
     ws.on("close", () => {
       console.log("[Web socket] Client disconnected");
     });
