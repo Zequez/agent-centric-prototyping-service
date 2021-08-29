@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "https://esm.sh/react@17";
 
 const App = () => {
-  const [participants, setParticipants] = useState({});
+  const [participants, setParticipants] = useState<Record<string, unknown>>({});
   const [participant, setParticipant] = useState<string | null>(null);
   useEffect(() => {
     (async () => {
@@ -18,6 +18,9 @@ const App = () => {
   }, []);
 
   console.log("Rendering");
+
+  const participantData =
+    participants && participant && participants[participant];
 
   return (
     <div className="min-h-screen bg-green-500 px-2 pb-2 flex flex-col">
@@ -72,7 +75,9 @@ const App = () => {
             p-2
             whitespace-pre
           `}
-          ></code>
+          >
+            {participantData ? JSON.stringify(participantData, null, 2) : null}
+          </code>
           <div className="flex py-4 items-center">
             <input
               type="text"

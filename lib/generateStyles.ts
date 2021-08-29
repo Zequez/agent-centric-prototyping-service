@@ -1,5 +1,6 @@
 import { Processor } from "https://esm.sh/windicss/lib";
-import { HTMLParser } from "https://esm.sh/windicss/utils/parser";
+// import { HTMLParser } from "https://esm.sh/windicss/utils/parser";
+import HTMLParser from "./htmlParser.ts";
 
 export function generateStyles(html: string) {
   // Get windi processor
@@ -10,8 +11,6 @@ export function generateStyles(html: string) {
     .parseClasses()
     .map((i) => i.result)
     .join(" ");
-
-  console.log(htmlClasses);
 
   // Generate preflight based on the html we input
   const preflightSheet = processor.preflight(html);
