@@ -1,1 +1,4 @@
 keys/*
+participants/*
+cache/*
+.env

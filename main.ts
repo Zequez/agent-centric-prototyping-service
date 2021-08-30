@@ -7,49 +7,64 @@ import {
   UnauthorizedError,
 } from "./lib/authorization.ts";
 import bodyDecoder from "./lib/bodyDecoder.ts";
-import { respond, match } from "./lib/routing.ts";
+import { respond, match, matchStatic } from "./lib/routing.ts";
 import { generateStyles } from "./lib/generateStyles.ts";
-import runDevServer from "./devServer.ts";
+import runDevServer from "./lib/devServer.ts";
 
-runDevServer();
-const server = serve({ port: 8888 });
+const APP_ENV = Deno.env.get("APP_ENV");
+const PORT = parseInt(Deno.env.get("PORT") || "", 10);
+if (!PORT) throw new Error("PORT environment variable not found");
+if (!APP_ENV) throw new Error("APP_ENV environment variable not found");
+
+const isDev = APP_ENV === "development";
+
+Deno.writeTextFileSync(
+  "./cache/env.ts",
+  `export default ${JSON.stringify({ APP_ENV })};`
+);
+
+if (isDev) runDevServer();
+const server = serve({ port: PORT });
+console.log(
+  `[${new Date().toISOString()}] Server started at 0.0.0.0:${PORT} on ${APP_ENV.toUpperCase()} mode`
+);
+
+console.log("Using YML data controller");
 const controller = new Controller("./participants/");
-// TODO: On dev mode reload, on prod keep on memory
+
 const staticFile = (file: string) => Deno.readTextFileSync(`./static/${file}`);
-const favicon = staticFile("favicon.svg");
+const readStatic = (file: string) => () => staticFile(file);
 
 const participantRegex = /^\/participants\/([a-z0-9-]+)$/;
 const routes = [
-  match("GET", "/favicon.ico", () =>
-    respond(200, favicon, new Headers({ "content-type": "image/svg+xml" }))
+  matchStatic("/", readStatic("index.html"), "text/html", !isDev),
+  matchStatic(
+    "/favicon.ico",
+    readStatic("favicon.svg"),
+    "image/svg+xml",
+    !isDev
   ),
-  match("GET", "/", () =>
-    respond(
-      200,
-      staticFile("index.html"),
-      new Headers({ "content-type": "text/html" })
-    )
+  matchStatic("/robots.txt", readStatic("robots.txt"), "text/plain", !isDev),
+  matchStatic(
+    "/styles.css",
+    () => generateStyles(staticFile("index.html") + staticFile("app.tsx")),
+    "text/css",
+    !isDev
   ),
-  match("GET", "/styles.css", () =>
-    respond(
-      200,
-      generateStyles(staticFile("index.html") + staticFile("app.tsx")),
-      new Headers({ "content-type": "text/css" })
-    )
+  matchStatic(
+    "/main.js",
+    async () => {
+      const { files } = await Deno.emit("./static/main.tsx", {
+        check: false,
+        bundle: "module",
+      });
+      const key = Object.keys(files).find((k) => k.endsWith("bundle.js")) || "";
+      return files[key] as string;
+    },
+    "text/javascript",
+    !isDev
   ),
-  match("GET", "/main.js", async () => {
-    const { files } = await Deno.emit("./static/main.tsx", {
-      check: false,
-      bundle: "module",
-    });
-    console.log(files);
-    const key = Object.keys(files).find((k) => k.endsWith("bundle.js")) || "";
-    return respond(
-      200,
-      files[key] as string,
-      new Headers({ "content-type": "text/javascript" })
-    );
-  }),
+
   match("GET", "/participants", () =>
     respond(200, Object.fromEntries(controller.all()))
   ),

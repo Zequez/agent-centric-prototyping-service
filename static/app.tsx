@@ -20,8 +20,6 @@ const App = () => {
     })();
   }, []);
 
-  console.log("Rendering");
-
   const clickParticipant = (name: string) => {
     setParticipant(name);
     setEditorText(JSON.stringify(participants[name], null, 2));
@@ -47,11 +45,6 @@ const App = () => {
       });
     }
   };
-
-  console.log(participant && passphrases[participant]);
-
-  // const participantData =
-  //   participants && participant && participants[participant];
 
   return (
     <div className="min-h-screen bg-green-500 px-2 pb-2 flex flex-col">
