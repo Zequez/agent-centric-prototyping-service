@@ -1,11 +1,17 @@
 /// <reference lib="dom" />
 import React, { useEffect, useState } from "https://esm.sh/react@17";
 
+const PASSPHRASES_STORAGE = "passphrases";
+const storedPassphrases = JSON.parse(
+  localStorage.getItem(PASSPHRASES_STORAGE) || "{}"
+);
+
 const App = () => {
   const [participants, setParticipants] = useState<Record<string, unknown>>({});
   const [participant, setParticipant] = useState<string | null>(null);
   const [editorText, setEditorText] = useState<string>("");
-  const [passphrases, setPassphrases] = useState<Record<string, string>>({});
+  const [passphrases, setPassphrases] =
+    useState<Record<string, string>>(storedPassphrases);
   useEffect(() => {
     (async () => {
       const response = await fetch("/participants");
@@ -26,7 +32,9 @@ const App = () => {
   };
 
   const changePassphrase = (name: string, passphrase: string) => {
-    setPassphrases({ ...passphrases, [name]: passphrase });
+    const newPassphrases = { ...passphrases, [name]: passphrase };
+    setPassphrases(newPassphrases);
+    localStorage.setItem(PASSPHRASES_STORAGE, JSON.stringify(newPassphrases));
   };
 
   const submit = () => {
