@@ -1,4 +1,5 @@
 keys/*
 participants/*
 cache/*
+logs/*
 .env

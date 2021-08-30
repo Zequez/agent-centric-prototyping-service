@@ -18,6 +18,7 @@ const config: DenonConfig = {
     prod: {
       cmd: "main.ts",
       desc: "Start the prototyping server on production mode",
+      watch: false,
       env: {
         APP_ENV: "production",
       },

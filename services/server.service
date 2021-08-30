@@ -1,0 +1,17 @@
+[Unit]
+Description=Agent Centric Prototyping Service
+
+[Service]
+ExecStart=/root/server/start_prod.sh
+# Required on some systems
+WorkingDirectory=/root/server
+Restart=always
+# Restart service after 10 seconds if Deno service crashes
+RestartSec=10
+# Output to syslog
+StandardOutput=append:/root/server/logs/production.log
+StandardError=append:/root/server/logs/production.log
+SyslogIdentifier=agent-centric-prototyping-service
+
+[Install]
+WantedBy=multi-user.target
