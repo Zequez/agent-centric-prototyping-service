@@ -6,17 +6,26 @@ const storedPassphrases = JSON.parse(
   localStorage.getItem(PASSPHRASES_STORAGE) || "{}"
 );
 
+type Participants = Record<string, unknown>;
+type SubmitState = "loading" | "error" | "loaded";
+
 const App = () => {
-  const [participants, setParticipants] = useState<Record<string, unknown>>({});
+  const [participants, setParticipants] = useState<Participants>({});
+
   const [participant, setParticipant] = useState<string | null>(null);
+  const [participantSubmitState, setParticipantSubmitState] =
+    useState<SubmitState>();
+  const [participantSubmitError, setParticipantSubmitError] =
+    useState<null | Record<string, unknown>>(null);
+
   const [editorText, setEditorText] = useState<string>("");
   const [passphrases, setPassphrases] =
     useState<Record<string, string>>(storedPassphrases);
+
   useEffect(() => {
     (async () => {
       const response = await fetch("/participants");
       const data = await response.json();
-      console.log(data);
       setParticipants(data);
       const name = Object.keys(data)[0];
       if (name) {
@@ -37,11 +46,12 @@ const App = () => {
     localStorage.setItem(PASSPHRASES_STORAGE, JSON.stringify(newPassphrases));
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (participant) {
       const auth = passphrases[participant];
-
-      fetch(`/participants/${participant}`, {
+      setParticipantSubmitState("loading");
+      setParticipantSubmitError(null);
+      const response = await fetch(`/participants/${participant}`, {
         method: "POST",
         headers: auth
           ? {
@@ -51,6 +61,12 @@ const App = () => {
           : { "Content-Type": "application/json" },
         body: editorText,
       });
+      if (response.status !== 200) {
+        setParticipantSubmitState("error");
+        setParticipantSubmitError(await response.json());
+      } else {
+        setParticipantSubmitState("loaded");
+      }
     }
   };
 
@@ -152,6 +168,11 @@ const App = () => {
           </div>
         </div>
       </div>
+      {participantSubmitError ? (
+        <div className="rounded-b-lg bg-gray-800 text-white p-4 mx-4">
+          {JSON.stringify(participantSubmitError, null, 2)}
+        </div>
+      ) : null}
     </div>
   );
 };
