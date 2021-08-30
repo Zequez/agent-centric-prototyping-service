@@ -1,5 +1,13 @@
-# ln services/server.service /etc/systemd/system/server.service
+# To Install
+# cp services/server.service /etc/systemd/system/server.service
 # systemctl enable server.service
+
+# To check logs
+# journalctl -u server.service  -n 100 --no-pager
+
+# To reload service file after it was changed:
+# systemctl daemon-reload
+# systemctl restart server.service
 
 [Unit]
 Description=Agent Centric Prototyping Service
