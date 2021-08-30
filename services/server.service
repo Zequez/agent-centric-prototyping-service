@@ -1,8 +1,11 @@
+# ln services/server.service /etc/systemd/system/server.service
+# systemctl enable server.service
+
 [Unit]
 Description=Agent Centric Prototyping Service
 
 [Service]
-ExecStart=/root/server/start_prod.sh
+ExecStart=/root/server/scripts/start_prod.sh
 # Required on some systems
 WorkingDirectory=/root/server
 Restart=always
