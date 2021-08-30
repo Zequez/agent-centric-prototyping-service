@@ -1,4 +1,3 @@
-import { ServerRequest } from "std/http/mod.ts";
 import * as path from "std/path/mod.ts";
 import { existsSync } from "std/fs/mod.ts";
 import { createHash } from "std/hash/mod.ts";
@@ -17,16 +16,13 @@ export function deleteKey(participant: string) {
 
 export class UnauthorizedError extends Error {}
 
-export function ensureAuthorized(
-  participant: string,
-  req: ServerRequest
-): void {
+export function ensureAuthorized(participant: string, req: Request): void {
   if (!verifyAuthorization(participant, req)) {
     throw new UnauthorizedError();
   }
 }
 
-function verifyAuthorization(participant: string, req: ServerRequest): boolean {
+function verifyAuthorization(participant: string, req: Request): boolean {
   const keyFilePath = path.join(KEYS_PATH, participant);
   const isSecuredByKey = existsSync(keyFilePath);
   const authorizationHash = extractHashedAuthorization(req);
@@ -45,7 +41,7 @@ function verifyAuthorization(participant: string, req: ServerRequest): boolean {
   return true;
 }
 
-function extractHashedAuthorization(req: ServerRequest): string | null {
+function extractHashedAuthorization(req: Request): string | null {
   const auth = req.headers.get("Authorization");
   if (auth) {
     const m = auth.match("Basic (.*)");
