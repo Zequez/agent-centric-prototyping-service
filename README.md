@@ -6,7 +6,7 @@ Secure Scuttlebutt or whatever ends up being the most convenient.
 
 ## Responsibilities
 
-- Be online and accessible from any website
+- ✔ Be online and accessible from any website
 - ✔ Optional authentication with a passphrase
 - ✔ Store agents data
 - ✔ Serve all agents data
@@ -14,12 +14,21 @@ Secure Scuttlebutt or whatever ends up being the most convenient.
 - Validate data storage according to agreements
 - Store blobs on IPFS and serve them
 - Enforce limit on agent records size
-- Playground panel to explore the all the service functionalities
+- ✔ Playground panel to explore the all the service functionalities
 
 ## Usage
 
 Public URL: https://agent-centric-prototyping-service.zequez.space
 
+### Start development server
+
+The app build for [Deno](https://deno.land/). Follow instructions there to have it installed.
+
+We use [Denon](https://deno.land/x/denon) for running scripts. Follow instructions there to install it.
+
+```bash
+denon dev
+```
 
 ### GET /participants
 
