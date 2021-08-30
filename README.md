@@ -20,6 +20,15 @@ Secure Scuttlebutt or whatever ends up being the most convenient.
 
 Public URL: https://agent-centric-prototyping-service.zequez.space
 
+That is running on a Digital Ocean US$ 5 / month droplet.
+
+All the deployment and everything is all handmade.
+
+The server does not have any security policies to prevent abuse yet; so it's likely you could easily break it; if you figure out how to break it create an issue.
+
+So far there is no database, every participant data is stored on the filesystem as
+an independent file.
+
 ### Start development server
 
 The app build for [Deno](https://deno.land/). Follow instructions there to have it installed.
