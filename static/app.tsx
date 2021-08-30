@@ -18,6 +18,7 @@ const App = () => {
   const [participantSubmitError, setParticipantSubmitError] =
     useState<null | Record<string, unknown>>(null);
 
+  const [searchText, setSearchText] = useState<string>("");
   const [editorText, setEditorText] = useState<string>("");
   const [passphrases, setPassphrases] =
     useState<Record<string, string>>(storedPassphrases);
@@ -92,6 +93,8 @@ const App = () => {
                 focus:outline-none focus:ring-3 focus:ring-green-400
               `}
               placeholder="Search"
+              value={searchText}
+              onChange={(ev) => setSearchText(ev.target.value)}
             />
           </div>
           <div
@@ -104,13 +107,15 @@ const App = () => {
               flex-grow
             `}
           >
-            {Object.keys(participants).map((name) => (
-              <ParticipantSelector
-                name={name}
-                active={name === participant}
-                onClick={() => clickParticipant(name)}
-              />
-            ))}
+            {Object.keys(participants)
+              .filter((p) => p.startsWith(searchText))
+              .map((name) => (
+                <ParticipantSelector
+                  name={name}
+                  active={name === participant}
+                  onClick={() => clickParticipant(name)}
+                />
+              ))}
           </div>
         </div>
         <div className="flex-grow flex flex-col">
