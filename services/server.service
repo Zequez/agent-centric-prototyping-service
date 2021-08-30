@@ -24,5 +24,10 @@ StandardOutput=append:/root/server/logs/production.log
 StandardError=append:/root/server/logs/production.log
 SyslogIdentifier=agent-centric-prototyping-service
 
+# Read .bash_profile env variables and save them to an environment variable file
+# that later we load
+ExecStartPre=/bin/bash --login -c 'env > /tmp/.magic-environment-file'
+EnvironmentFile=-/tmp/.magic-environment-file
+
 [Install]
 WantedBy=multi-user.target
