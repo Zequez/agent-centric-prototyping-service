@@ -71,13 +71,20 @@ for await (const conn of server) {
 async function serveHttp(conn: Deno.Conn) {
   const httpConn = Deno.serveHttp(conn);
 
-  for await (const reqEvent of httpConn) {
-    const req = reqEvent.request;
-    const start = Date.now();
-    console.log(req.method, req.url);
-
-    let response: null | Response = null;
+  while (true) {
+    let reqEvent = null;
     try {
+      reqEvent = await httpConn.nextRequest();
+      if (reqEvent === null) {
+        return;
+      }
+
+      const req = reqEvent.request;
+      const start = Date.now();
+      console.log(req.method, req.url);
+
+      let response: null | Response = null;
+
       for (const route of routes) {
         response = await route(req);
         if (response) {
@@ -85,16 +92,16 @@ async function serveHttp(conn: Deno.Conn) {
           break;
         }
       }
+
+      if (!response) await reqEvent.respondWith(respond(404));
+      const ms = Date.now() - start;
+      console.log(`Response time ${ms}ms`);
     } catch (error) {
-      if (error instanceof UnauthorizedError) {
+      if (error instanceof UnauthorizedError && reqEvent) {
         await reqEvent.respondWith(respond(401));
       } else {
         console.log(error);
       }
     }
-
-    if (!response) await reqEvent.respondWith(respond(404));
-    const ms = Date.now() - start;
-    console.log(`Response time ${ms}ms`);
   }
 }
