@@ -1,4 +1,4 @@
-import { respond, match, matchStatic } from "./lib/routing.ts";
+import { newResponse, match, matchStatic } from "./lib/routing.ts";
 import { generateStyles } from "./lib/generateStyles.ts";
 import Controller from "./lib/controller.ts";
 import { ensureAuthorized, deleteKey } from "./lib/authorization.ts";
@@ -43,11 +43,11 @@ export default ({ isDev, controller }: RoutesContext) => [
   ),
 
   match("GET", "/participants", () =>
-    respond(200, Object.fromEntries(controller.all()))
+    newResponse(200, Object.fromEntries(controller.all()))
   ),
   match("GET", participantRegex, ([participant]) => {
     const data = controller.get(participant);
-    return data ? respond(200, data) : respond(404);
+    return data ? newResponse(200, data) : newResponse(404);
   }),
   match("POST", participantRegex, async ([participant], req) => {
     ensureAuthorized(participant, req);
@@ -55,9 +55,9 @@ export default ({ isDev, controller }: RoutesContext) => [
     const data = await bodyDecoder(req);
     if (data) {
       controller.set(participant, data);
-      return respond(200, data);
+      return newResponse(200, data);
     } else {
-      return respond(400);
+      return newResponse(400);
     }
   }),
   match("DELETE", participantRegex, ([participant], req) => {
@@ -65,9 +65,9 @@ export default ({ isDev, controller }: RoutesContext) => [
     if (controller.get(participant)) {
       controller.delete(participant);
       deleteKey(participant);
-      return respond(200);
+      return newResponse(200);
     } else {
-      return respond(404);
+      return newResponse(404);
     }
   }),
 ];

@@ -11,7 +11,7 @@ const defaultHeaders = new Headers({
   "Content-Type": "application/json",
 });
 
-export function respond(
+export function newResponse(
   status: number,
   body?: Record<string, unknown> | string,
   headers?: Headers
@@ -67,7 +67,7 @@ export function matchStatic(
     "GET",
     filePath,
     cacheIf(cache, async () =>
-      respond(
+      newResponse(
         200,
         await readFun(),
         new Headers({ "content-type": contentType })

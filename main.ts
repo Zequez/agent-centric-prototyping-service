@@ -1,6 +1,6 @@
 import Controller from "./lib/controller.ts";
 import { UnauthorizedError } from "./lib/authorization.ts";
-import { respond } from "./lib/routing.ts";
+import { newResponse } from "./lib/routing.ts";
 import generateRoutes from "./routes.ts";
 
 import runDevServer from "./lib/devServer.ts";
@@ -72,36 +72,55 @@ async function serveHttp(conn: Deno.Conn) {
   const httpConn = Deno.serveHttp(conn);
 
   while (true) {
-    let reqEvent = null;
+    let reqEvent: Deno.RequestEvent | null = null;
     try {
       reqEvent = await httpConn.nextRequest();
       if (reqEvent === null) {
         return;
-      }
-
-      const req = reqEvent.request;
-      const start = Date.now();
-      console.log(req.method, req.url);
-
-      let response: null | Response = null;
-
-      for (const route of routes) {
-        response = await route(req);
-        if (response) {
-          await reqEvent.respondWith(response);
-          break;
-        }
-      }
-
-      if (!response) await reqEvent.respondWith(respond(404));
-      const ms = Date.now() - start;
-      console.log(`Response time ${ms}ms`);
-    } catch (error) {
-      if (error instanceof UnauthorizedError && reqEvent) {
-        await reqEvent.respondWith(respond(401));
       } else {
-        console.log(error);
+        handleRequestEvent(reqEvent);
       }
+    } catch (error) {
+      console.error(error);
     }
   }
+}
+
+function beforeSendResponse(response: Response): Response {
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response;
+}
+
+async function handleRequestEvent(reqEvent: Deno.RequestEvent) {
+  const respondWith = async (r: Response) => {
+    const response = beforeSendResponse(r);
+    await reqEvent.respondWith(response);
+  };
+
+  const req = reqEvent.request;
+  const start = Date.now();
+  console.log(req.method, req.url);
+
+  let response: null | Response = null;
+
+  try {
+    for (const route of routes) {
+      response = await route(req);
+      if (response) {
+        await respondWith(response);
+        break;
+      }
+    }
+
+    if (!response) await respondWith(newResponse(404));
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      await respondWith(newResponse(401));
+    } else {
+      throw error;
+    }
+  }
+
+  const ms = Date.now() - start;
+  console.log(`Response time ${ms}ms`);
 }
