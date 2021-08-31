@@ -6,13 +6,16 @@ Secure Scuttlebutt, IPFS, etc.
 
 ## Characteristics
 
-- Agent-Centric: This means that each participant has their own Document, that holds
+- **Agent-Centric:** This means that each participant has their own Document, that holds
   all their data. This also means that if you wish to participate *as a group* with other
   people, you would also have your own group-Document. Identify with a simple secret passphrase.
-- Public: This means that all the data stored is open to be seen by anyone;
-  there are no secret information silos. Encrypt it yourself if you want.
-- Mutable: This means that the data stored is mutable and we don't maintain a copy. Treat
+- **Public:** This means that all the data stored is open to be seen by anyone;
+  there are no secret information silos. Encrypt it yourself if you want. It also means that
+  it's a public utility, like a park or a beach; maintained by individuals, enjoyed by everyone.
+- **Mutable:** This means that the data stored is mutable and we don't maintain a copy. Treat
   the data as ephemeral. Back it up yourself if you want.
+- **:** All the resources are available for everyone to use, so we don't need
+  to rely on Firebase or some other SASS service, we can all use a single server. This encurages to collaborate with other pilot projects.
 
 ## Responsibilities
 
