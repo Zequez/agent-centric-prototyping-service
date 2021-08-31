@@ -1,8 +1,18 @@
 # Agent Centric Prototyping Service
 
-Barebones server to use for agent-centric app prototyping that will likely be
-migrated to a decentralized infrastructure such as Holochain, SSB, IPFS,
-Secure Scuttlebutt or whatever ends up being the most convenient.
+Barebones server to use for agent-centric app prototyping that after maturation
+can be progressively adapted to use more advanced protocols such as Holochain,
+Secure Scuttlebutt, IPFS, etc.
+
+## Characteristics
+
+- Agent-Centric: This means that each participant has their own Document, that holds
+  all their data. This also means that if you wish to participate *as a group* with other
+  people, you would also have your own group-Document. Identify with a simple secret passphrase.
+- Public: This means that all the data stored is open to be seen by anyone;
+  there are no secret information silos. Encrypt it yourself if you want.
+- Mutable: This means that the data stored is mutable and we don't maintain a copy. Treat
+  the data as ephemeral. Back it up yourself if you want.
 
 ## Responsibilities
 
@@ -12,7 +22,7 @@ Secure Scuttlebutt or whatever ends up being the most convenient.
 - ✔ Serve all agents data
 - Serve agents data based on query
 - Validate data storage according to agreements
-- Store blobs on IPFS and serve them
+- Store blobs on IPFS and serve them or use a pinning service
 - Enforce limit on agent records size
 - ✔ Playground panel to explore the all the service functionalities
 
@@ -24,7 +34,7 @@ That is running on a Digital Ocean US$ 5 / month droplet.
 
 All the deployment and everything is all handmade.
 
-The server does not have any security policies to prevent abuse yet; so it's likely you could easily break it; if you figure out how to break it create an issue.
+The server does not have any security policies to prevent abuse yet; so it's likely you could easily break it; if you figure out how to break it, create an issue.
 
 So far there is no database, every participant data is stored on the filesystem as
 an independent file.
